@@ -50,12 +50,15 @@ func RelationUpdataNumbers(userId, toUserId int64, add bool) error {
 	} else {
 		n = -1
 	}
-	//更新用户关注数和被关注数
-	if err := database.MySqlDb.Model(&database.User{}).Where("id = ?", userId).Update("follow_count", gorm.Expr("follow_count + ?", n)).Error; err != nil {
-		return err
-	}
-	if err := database.MySqlDb.Model(&database.User{}).Where("id = ?", toUserId).Update("follower_count", gorm.Expr("follower_count + ?", n)).Error; err != nil {
-		return err
-	}
-	return nil
+	//使用事务更新用户关注数和被关注数
+	err := database.MySqlDb.Transaction(func(db *gorm.DB) error {
+		if err := db.Model(&database.User{}).Where("id = ?", userId).Update("follow_count", gorm.Expr("follow_count + ?", n)).Error; err != nil {
+			return err
+		}
+		if err := db.Model(&database.User{}).Where("id = ?", toUserId).Update("follower_count", gorm.Expr("follower_count + ?", n)).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+	return err
 }

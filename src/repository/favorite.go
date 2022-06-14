@@ -46,17 +46,22 @@ func FavoriteUpdataNumbers(videoId, videoUserId, userId int64, add bool) error {
 	} else {
 		n = -1
 	}
-	//更新视频点赞数
-	if err := database.MySqlDb.Model(&database.Video{}).Where("id = ?", videoId).Update("favorite_count", gorm.Expr("favorite_count + ?", n)).Error; err != nil {
-		return err
-	}
-	//更新video用户获赞数
-	if err := database.MySqlDb.Model(&database.User{}).Where("id = ?", videoUserId).Update("total_favorite", gorm.Expr("total_favorite + ?", n)).Error; err != nil {
-		return err
-	}
-	//更新token用户喜欢数
-	if err := database.MySqlDb.Model(&database.User{}).Where("id = ?", userId).Update("favorite_count", gorm.Expr("favorite_count + ?", n)).Error; err != nil {
-		return err
-	}
-	return nil
+	//采用事务
+	err := database.MySqlDb.Transaction(func(db *gorm.DB) error {
+		//更新视频点赞数
+		if err := db.Model(&database.Video{}).Where("id = ?", videoId).Update("favorite_count", gorm.Expr("favorite_count + ?", n)).Error; err != nil {
+			return err
+		}
+		//更新video用户获赞数
+		if err := db.Model(&database.User{}).Where("id = ?", videoUserId).Update("total_favorite", gorm.Expr("total_favorite + ?", n)).Error; err != nil {
+			return err
+		}
+		//更新token用户喜欢数
+		if err := db.Model(&database.User{}).Where("id = ?", userId).Update("favorite_count", gorm.Expr("favorite_count + ?", n)).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+	return err
 }
