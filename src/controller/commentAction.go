@@ -95,14 +95,7 @@ func CommentAction(c *gin.Context) {
 			Content:    com.Content,
 			CreateDate: fmt.Sprintf("%d-%d", time.UnixMilli(com.CreatedAt).Month(), time.UnixMilli(com.CreatedAt).Day()),
 		}
-		//更新评论数
-		if err := repository.CommentUpdataNumbers(videoId, true); err != nil {
-			//更新失败
-			c.JSON(http.StatusOK, service.Response{
-				StatusCode: 1, StatusMsg: fmt.Sprintf("Comment action error : %v\n", err),
-			})
-			return
-		}
+
 		//返回成功响应
 		c.JSON(http.StatusOK, service.CommentActionResponse{
 			Response: service.Response{StatusCode: 0},
@@ -123,21 +116,14 @@ func CommentAction(c *gin.Context) {
 			})
 		}
 		//删除评论
-		if err := repository.CommentDelete(commentId); err != nil {
+		if err := repository.CommentDelete(commentId, videoId); err != nil {
 			//删除失败
 			c.JSON(http.StatusOK, service.Response{
 				StatusCode: 1,
 				StatusMsg:  fmt.Sprintf("Delete comment action error : %v\n", err),
 			})
 		}
-		//更新评论数
-		if err := repository.CommentUpdataNumbers(videoId, false); err != nil {
-			//更新失败
-			c.JSON(http.StatusOK, service.Response{
-				StatusCode: 1, StatusMsg: fmt.Sprintf("Comment action error : %v\n", err),
-			})
-			return
-		}
+
 		//返回成功响应
 		c.JSON(http.StatusOK, service.CommentActionResponse{
 			Response: service.Response{StatusCode: 0},

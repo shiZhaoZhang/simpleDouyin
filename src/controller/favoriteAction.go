@@ -78,14 +78,7 @@ func FavoriteAction(c *gin.Context) {
 			})
 			return
 		}
-		//添加成功，统一更新视频点赞数、用户获赞数、用户喜欢数
-		if err := repository.FavoriteUpdataNumbers(videoId, videoUserId, userId, true); err != nil {
-			c.JSON(http.StatusOK, service.Response{
-				StatusCode: 1,
-				StatusMsg:  fmt.Sprintf("Favorite action error : %v\n", err),
-			})
-			return
-		}
+
 		c.JSON(http.StatusOK, service.Response{StatusCode: 0})
 		return
 	}
@@ -99,21 +92,14 @@ func FavoriteAction(c *gin.Context) {
 			})
 			return
 		}
-		if err := repository.FavoriteDelete(userId, videoId); err != nil {
+		if err := repository.FavoriteDelete(userId, videoId, videoUserId); err != nil {
 			//取消赞失败，返回失败响应
 			c.JSON(http.StatusOK, service.Response{
 				StatusCode: 1, StatusMsg: fmt.Sprintf("Remove favorite action error : %v\n", err),
 			})
 			return
 		}
-		//删除成功，统一更新视频点赞数、用户获赞数、用户喜欢数
-		if err := repository.FavoriteUpdataNumbers(videoId, videoUserId, userId, false); err != nil {
-			c.JSON(http.StatusOK, service.Response{
-				StatusCode: 1,
-				StatusMsg:  fmt.Sprintf("Favorite action error : %v\n", err),
-			})
-			return
-		}
+
 		c.JSON(http.StatusOK, service.Response{StatusCode: 0})
 		return
 	}

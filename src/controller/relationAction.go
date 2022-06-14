@@ -73,14 +73,6 @@ func RelationAction(c *gin.Context) {
 					StatusMsg:  fmt.Sprintf("Relation create error: %v", err)})
 			return
 		}
-		//更新用户关注数和被关注数
-		if err := repository.RelationUpdataNumbers(userId, toUserId, true); err != nil {
-			//更新失败，返回失败响应
-			c.JSON(http.StatusOK, service.Response{
-				StatusCode: 1,
-				StatusMsg:  err.Error()})
-			return
-		}
 		//返回成功响应
 		c.JSON(http.StatusOK, service.Response{
 			StatusCode: 0,
@@ -103,14 +95,7 @@ func RelationAction(c *gin.Context) {
 				StatusMsg:  fmt.Sprintf("Relation delete error: %v", err)})
 			return
 		}
-		//更新用户关注数和被关注数
-		if err := repository.RelationUpdataNumbers(userId, toUserId, false); err != nil {
-			//更新失败，返回失败响应
-			c.JSON(http.StatusOK, service.Response{
-				StatusCode: 1,
-				StatusMsg:  err.Error()})
-			return
-		}
+
 		//返回成功响应
 		c.JSON(http.StatusOK, service.Response{
 			StatusCode: 0,
