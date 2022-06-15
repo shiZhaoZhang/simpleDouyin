@@ -30,6 +30,7 @@ func UserQueryByName(username string) (user []db.User, exist bool) {
 	return
 }
 
+/*
 //验证登录信息是否正确(账户密码)
 func UserValid(username, password string) (user []db.User, exist bool) {
 	if db.MySqlDb.Limit(1).Where("name = ? AND password = ?", username, password).Find(&user); len(user) > 0 {
@@ -39,3 +40,4 @@ func UserValid(username, password string) (user []db.User, exist bool) {
 	}
 	return
 }
+*/
