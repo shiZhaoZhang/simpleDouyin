@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"douyin/config"
 	"douyin/src/database"
 	"douyin/src/repository"
 	"douyin/src/service"
@@ -24,7 +25,7 @@ func Register(c *gin.Context) {
 		return
 	}
 	//散列加密密码
-	password := service.Encryption(c.Query("password"))
+	password := service.Encryption_PBKDF2(c.Query("password"), username, config.PBKDF2Iter)
 	//是否有给定头像和签名
 	avator := c.Query("avator")
 	signature := c.Query("signature")
@@ -37,10 +38,12 @@ func Register(c *gin.Context) {
 
 	//创建用户
 	user := database.User{
-		Name:      username,
-		Password:  password,
-		Avatar:    avator,
-		Signature: signature,
+		Name:       username,
+		Password:   password,
+		Avatar:     avator,
+		Signature:  signature,
+		Encryption: config.EncryptionType,
+		Iter:       config.PBKDF2Iter,
 	}
 	err := repository.UserCreate(&user)
 	//用户创建失败

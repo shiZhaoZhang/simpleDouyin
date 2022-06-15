@@ -59,7 +59,6 @@ func FavoriteUpdataNumbers(db *gorm.DB, videoId, videoUserId, userId int64, add 
 	} else {
 		n = -1
 	}
-	//采用事务
 
 	//更新视频点赞数
 	if err := db.Model(&database.Video{}).Where("id = ?", videoId).Update("favorite_count", gorm.Expr("favorite_count + ?", n)).Error; err != nil {

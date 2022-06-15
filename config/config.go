@@ -16,6 +16,10 @@ var GIN_MODE string //gin的打开模式，release或debug
 
 var MustVideosNums int //= 30 //返回视频流最大视频数量
 
+var PBKDF2Iter int //pdkdf2算法迭代次数
+
+var EncryptionType string //使用的加密算法
+
 type MySQLInfo struct {
 	USER      string
 	PASSWORD  string
@@ -79,6 +83,8 @@ func GetMySQLConfig() {
 
 type OtherInfo struct {
 	MAX_FEED_VIDEO_NUMS int
+	PBKDF2ITER          int
+	ENCRYPTION          string
 }
 
 //其他信息
@@ -95,4 +101,6 @@ func GetFeedNums() {
 		os.Exit(1)
 	}
 	MustVideosNums = d.MAX_FEED_VIDEO_NUMS
+	PBKDF2Iter = d.PBKDF2ITER
+	EncryptionType = d.ENCRYPTION
 }

@@ -15,6 +15,8 @@ type User struct {
 	Total_favorite int64  `gorm:"not null;default:0"`               //被赞数
 	Avatar         string //用户头像链接Url
 	Signature      string //用户个性签名
+	Encryption     string //使用的加密手段
+	Iter           int    //加密算法迭代次数
 }
 
 //视频信息
